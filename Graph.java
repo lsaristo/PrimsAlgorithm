@@ -3,26 +3,7 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
-import weiss.util.Iterator;
-import weiss.util.Collection;
-import weiss.util.List;
-import weiss.util.Queue;
-import weiss.util.Map;
-import weiss.util.LinkedList;
-import weiss.util.HashMap;
-import weiss.util.NoSuchElementException;
-import weiss.util.PriorityQueue;
-import weiss.nonstandard.PairingHeap;
-
-// Used to signal violations of preconditions for
-// various shortest path algorithms.
-class GraphException extends RuntimeException
-{
-    public GraphException( String name )
-    {
-        super( name );
-    }
-}
+import java.util.*;
 
 // Represents an edge in the graph.
 class Edge
@@ -71,8 +52,6 @@ class Vertex
 
     public void reset( )
       { dist = Graph.INFINITY; prev = null; pos = null; scratch = 0; }    
-      
-    public PairingHeap.Position<Path> pos;  // Used for dijkstra2 (Chapter 23)
 }
 
 // Graph class: evaluate shortest paths.
@@ -242,139 +221,6 @@ public class Graph
     }
 
     /**
-     * Single-source weighted shortest-path algorithm using pairing heaps.
-     */
-    public void dijkstra2( String startName )
-    {
-        PairingHeap<Path> pq = new PairingHeap<Path>( );
-
-        Vertex start = vertexMap.get( startName );
-        if( start == null )
-            throw new NoSuchElementException( "Start vertex not found" );
-
-        clearAll( );
-        start.pos = pq.insert( new Path( start, 0 ) ); start.dist = 0;
-
-        while ( !pq.isEmpty( ) )
-        {
-            Path vrec = pq.deleteMin( );
-            Vertex v = vrec.dest;
-                
-            for( Edge e : v.adj )
-            {
-                Vertex w = e.dest;
-                double cvw = e.cost;
-                
-                if( cvw < 0 )
-                    throw new GraphException( "Graph has negative edges" );
-                    
-                if( w.dist > v.dist + cvw )
-                {
-                    w.dist = v.dist + cvw;
-                    w.prev = v;
-                    
-                    Path newVal = new Path( w, w.dist );                    
-                    if( w.pos == null )
-                        w.pos = pq.insert( newVal );
-                    else
-                        pq.decreaseKey( w.pos, newVal ); 
-                }
-            }
-        }
-    }
-
-    /**
-     * Single-source negative-weighted shortest-path algorithm.
-     */
-    public void negative( String startName )
-    {
-        clearAll( ); 
-
-        Vertex start = vertexMap.get( startName );
-        if( start == null )
-            throw new NoSuchElementException( "Start vertex not found" );
-
-        Queue<Vertex> q = new LinkedList<Vertex>( );
-        q.add( start ); start.dist = 0; start.scratch++;
-
-        while( !q.isEmpty( ) )
-        {
-            Vertex v = q.remove( );
-            if( v.scratch++ > 2 * vertexMap.size( ) )
-                throw new GraphException( "Negative cycle detected" );
-
-            for( Edge e : v.adj )
-            {
-                Vertex w = e.dest;
-                double cvw = e.cost;
-                
-                if( w.dist > v.dist + cvw )
-                {
-                    w.dist = v.dist + cvw;
-                    w.prev = v;
-                      // Enqueue only if not already on the queue
-                    if( w.scratch++ % 2 == 0 )
-                        q.add( w );
-                    else
-                        w.scratch--;  // undo the enqueue increment    
-                }
-            }
-        }
-    }
-
-    /**
-     * Single-source negative-weighted acyclic-graph shortest-path algorithm.
-     */
-    public void acyclic( String startName )
-    {
-        Vertex start = vertexMap.get( startName );
-        if( start == null )
-            throw new NoSuchElementException( "Start vertex not found" );
-
-        clearAll( ); 
-        Queue<Vertex> q = new LinkedList<Vertex>( );
-        start.dist = 0;
-        
-          // Compute the indegrees
-		Collection<Vertex> vertexSet = vertexMap.values( );
-        for( Vertex v : vertexSet )
-            for( Edge e : v.adj )
-                e.dest.scratch++;
-            
-          // Enqueue vertices of indegree zero
-        for( Vertex v : vertexSet )
-            if( v.scratch == 0 )
-                q.add( v );
-       
-        int iterations;
-        for( iterations = 0; !q.isEmpty( ); iterations++ )
-        {
-            Vertex v = q.remove( );
-
-            for( Edge e : v.adj )
-            {
-                Vertex w = e.dest;
-                double cvw = e.cost;
-                
-                if( --w.scratch == 0 )
-                    q.add( w );
-                
-                if( v.dist == INFINITY )
-                    continue;    
-                
-                if( w.dist > v.dist + cvw )
-                {
-                    w.dist = v.dist + cvw;
-                    w.prev = v;
-                }
-            }
-        }
-        
-        if( iterations != vertexMap.size( ) )
-            throw new GraphException( "Graph has a cycle!" );
-    }
-
-    /**
      * Process a request; return false if end of file.
      */
     public static boolean processRequest( BufferedReader in, Graph g )
@@ -418,54 +264,3 @@ public class Graph
           { System.err.println( e ); }
         return true;
     }
-
-    /**
-     * A main routine that:
-     * 1. Reads a file containing edges (supplied as a command-line parameter);
-     * 2. Forms the graph;
-     * 3. Repeatedly prompts for two vertices and
-     *    runs the shortest path algorithm.
-     * The data file is a sequence of lines of the format
-     *    source destination.
-     */
-    public static void main( String [ ] args )
-    {
-        Graph g = new Graph( );
-        try
-        {
-            FileReader fin = new FileReader( args[0] );
-            BufferedReader graphFile = new BufferedReader( fin );
-
-            // Read the edges and insert
-            String line;
-            while( ( line = graphFile.readLine( ) ) != null )
-            {
-                StringTokenizer st = new StringTokenizer( line );
-
-                try
-                {
-                    if( st.countTokens( ) != 3 )
-                    {
-                        System.err.println( "Skipping ill-formatted line " + line );
-                        continue;
-                    }
-                    String source  = st.nextToken( );
-                    String dest    = st.nextToken( );
-                    int    cost    = Integer.parseInt( st.nextToken( ) );
-                    g.addEdge( source, dest, cost );
-                }
-                catch( NumberFormatException e )
-                  { System.err.println( "Skipping ill-formatted line " + line ); }
-             }
-         }
-         catch( IOException e )
-           { System.err.println( e ); }
-
-         System.out.println( "File read..." );
-         System.out.println( g.vertexMap.size( ) + " vertices" );
-
-         BufferedReader in = new BufferedReader( new InputStreamReader( System.in ) );
-         while( processRequest( in, g ) )
-             ;
-    }
-}
