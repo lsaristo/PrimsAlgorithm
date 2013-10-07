@@ -13,6 +13,7 @@ public class Prim {
      * args to the program should be the list of vertices.
      */
     public static void main(String[] args) {
+		ArrayList<Vertex> tree = new Arraylist();
         Graph g = new Graph();
         solve(g);
     }
