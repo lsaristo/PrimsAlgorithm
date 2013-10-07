@@ -29,10 +29,13 @@ public class Prim {
 	}
 
 	private void primsAlgorithm() {
+		
+		Vertex currentVertex =null;
 		ArrayList<Vertex> vertList = new ArrayList<Vertex>();	
 		vertList.add(graph.getVertex("A"));
 		while(vertList.size > 0) {
-			// Breadth-first alg goes here. 
+			currentVertex = vertList.remove(0);
+			
 		}
 	}
 
