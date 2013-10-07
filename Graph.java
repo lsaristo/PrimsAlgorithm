@@ -54,24 +54,10 @@ class Vertex
       { dist = Graph.INFINITY; prev = null; pos = null; scratch = 0; }    
 }
 
-// Graph class: evaluate shortest paths.
-//
-// CONSTRUCTION: with no parameters.
-//
-// ******************PUBLIC OPERATIONS**********************
-// void addEdge( String v, String w, double cvw )
-//                              --> Add additional edge
-// void printPath( String w )   --> Print path after alg is run
-// void unweighted( String s )  --> Single-source unweighted
-// void dijkstra( String s )    --> Single-source weighted
-// void negative( String s )    --> Single-source negative weighted
-// void acyclic( String s )     --> Single-source acyclic
-// ******************ERRORS*********************************
-// Some error checking is performed to make sure graph is ok,
-// and to make sure graph satisfies properties needed by each
-// algorithm.  Exceptions are thrown if errors are detected.
-
-public class Graph
+/**
+ * The Graph class
+ */
+public class Graph implements Iterable
 {
     public static final double INFINITY = Double.MAX_VALUE;
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
@@ -145,4 +131,29 @@ public class Graph
         for( Vertex v : vertexMap.values( ) )
             v.reset( );
     }
-}
+
+   /* Implements Iterable interface */
+    public Iterator iterator() {
+        return new GraphIterator(this);
+    }
+
+    /**
+     * GraphIterator class
+     */
+    class GraphIterator implements Iterator {
+        Iterator vertIter;
+
+        public GraphIterator() {
+            vertIter = vertexMap.values().iterator();
+        }
+        
+        public boolean hasNext() {
+            return vertIter.hasNext();
+        }
+
+        public Vertex next() {
+            return vertIter.next();
+        }         
+
+    } // End graph iterator class
+} // End graph class

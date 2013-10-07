@@ -29,13 +29,24 @@ public class Prim {
 	}
 
 	private void primsAlgorithm() {
-		
-		Vertex currentVertex =null;
-		ArrayList<Vertex> vertList = new ArrayList<Vertex>();	
-		vertList.add(graph.getVertex("A"));
-		while(vertList.size > 0) {
-			currentVertex = vertList.remove(0);
-			
+        ArrayList<Graph> tree = new Arraylist<Graph>(); 		
+        ArrayList<Vertex> Q = new ArrayList<Vertex>();
+        for(Vertex v : graph)
+            Q.add(v);
+        Vertex firstVertex = graph.getVertex("A");
+        tree.add(firstVertex);
+        Q.remove(firstVertex);		
+
+		while(Q.size > 0) {
+            Vertex temp = new Vertex("X", "Y", Double.POSITIVE_INFINITY);
+            double cost = Double.POSITIVE_INFINITY;
+		    for(Vertex v : tree) {
+                for(Vertex adj : v.adj()) {
+                    if(adj.cost() < temp.cost())
+                        temp = adj();
+                }
+                v.getVertex(temp);
+            }                	
 		}
 	}
 
