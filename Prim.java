@@ -4,9 +4,12 @@
  * Written by John Wilkey for CS47B
  */
 import java.util.*;
+import java.io.*;
 public class Prim {
 	/* Graph Configuration File */
 	final static String CONFIG = "graphConfig.txt";
+	final static String STARTVERT = "A";
+	final static String GOALVERT = "E";
 
 	/* Class memebers */
 	Graph graph;  
@@ -16,11 +19,11 @@ public class Prim {
 	}
 
 	private Graph createGraph() {
-		Graph newGraph = null;
+		Graph newGraph = new Graph();
 		try {
 			Scanner inScan = new Scanner(new BufferedReader(new FileReader(CONFIG)));
 			while(inScan.hasNext())
-				newGraph.getVertex(inScan.next(), inScan.next(), inScan.next());
+				newGraph.addEdge(inScan.next(), inScan.next(), (double)inScan.nextInt());
 		}
 		catch (IOException e) {
 			System.out.println("ERROR: Unexpected end of configuration or no configuration found");
@@ -29,24 +32,23 @@ public class Prim {
 	}
 
 	private void primsAlgorithm() {
-        ArrayList<Graph> tree = new Arraylist<Graph>(); 		
-        ArrayList<Vertex> Q = new ArrayList<Vertex>();
-        for(Vertex v : graph)
+        ArrayList<Graph.Vertex> tree = new ArrayList<Graph.Vertex>(); 		
+        ArrayList<Graph.Vertex> Q = new ArrayList<Graph.Vertex>();
+        for(Graph.Vertex v : graph)
             Q.add(v);
-        Vertex firstVertex = graph.getVertex("A");
-        tree.add(firstVertex);
-        Q.remove(firstVertex);		
-
-		while(Q.size > 0) {
-            Vertex temp = new Vertex("X", "Y", Double.POSITIVE_INFINITY);
-            double cost = Double.POSITIVE_INFINITY;
-		    for(Vertex v : tree) {
-                for(Vertex adj : v.adj()) {
-                    if(adj.cost() < temp.cost())
-                        temp = adj();
-                }
-                v.getVertex(temp);
-            }                	
+        Graph.Vertex currentVertex = graph.getVertex(STARTVERT); 
+        Q.remove(currentVertex);		
+		while(Q.size() > 1) {
+			if(currentVertex.equals(GOALVERT))
+				System.out.println("FOUND A GOAL: " + currentVertex); 
+            for(Graph.Vertex adjacent : currentVertex.neighbors) {
+            	if(currentVertex.cost(adjacent) > 0)
+                	System.out.println("Cost for neighbor is " + currentVertex.cost(adjacent) + " size of Q is " + Q.size() + 
+						" current vertex v is " + currentVertex + " and current neighbor is " + adjacent + " list Q is " + Q);
+			tree.add(adjacent);
+			currentVertex = adjacent;
+			Q.remove(adjacent);
+          	}                            	
 		}
 	}
 

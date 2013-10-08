@@ -5,59 +5,10 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.*;
 
-// Represents an edge in the graph.
-class Edge
-{
-    public Vertex     dest;   // Second vertex in Edge
-    public double     cost;   // Edge cost
-    
-    public Edge( Vertex d, double c )
-    {
-        dest = d;
-        cost = c;
-    }
-}
-
-// Represents an entry in the priority queue for Dijkstra's algorithm.
-class Path implements Comparable<Path>
-{
-    public Vertex     dest;   // w
-    public double     cost;   // d(w)
-    
-    public Path( Vertex d, double c )
-    {
-        dest = d;
-        cost = c;
-    }
-    
-    public int compareTo( Path rhs )
-    {
-        double otherCost = rhs.cost;
-        
-        return cost < otherCost ? -1 : cost > otherCost ? 1 : 0;
-    }
-}
-
-// Represents a vertex in the graph.
-class Vertex
-{
-    public String     name;   // Vertex name
-    public List<Edge> adj;    // Adjacent vertices
-    public double     dist;   // Cost
-    public Vertex     prev;   // Previous vertex on shortest path
-    public int        scratch;// Extra variable used in algorithm
-
-    public Vertex( String nm )
-      { name = nm; adj = new LinkedList<Edge>( ); reset( ); }
-
-    public void reset( )
-      { dist = Graph.INFINITY; prev = null; pos = null; scratch = 0; }    
-}
-
 /**
  * The Graph class
  */
-public class Graph implements Iterable
+public class Graph implements Iterable<Graph.Vertex>
 {
     public static final double INFINITY = Double.MAX_VALUE;
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
@@ -70,6 +21,7 @@ public class Graph implements Iterable
         Vertex v = getVertex( sourceName );
         Vertex w = getVertex( destName );
         v.adj.add( new Edge( w, cost ) );
+		v.neighbors.add(w);
     }
 
     /**
@@ -96,7 +48,7 @@ public class Graph implements Iterable
      * If vertexName is not present, add it to vertexMap.
      * In either case, return the Vertex.
      */
-    private Vertex getVertex( String vertexName )
+    public Vertex getVertex( String vertexName )
     {
         Vertex v = vertexMap.get( vertexName );
         if( v == null )
@@ -132,28 +84,98 @@ public class Graph implements Iterable
             v.reset( );
     }
 
+	// Represents an edge in the graph.
+	static class Edge
+	{
+    	public Vertex     dest;   // Second vertex in Edge
+    	public double     cost;   // Edge cost
+    
+    	public Edge( Vertex d, double c )
+    	{
+        	dest = d;
+        	cost = c;
+    	}
+	}
+
+	// Represents an entry in the priority queue for Dijkstra's algorithm.
+	static class Path implements Comparable<Path>
+	{
+    	public Vertex     dest;   // w
+    	public double     cost;   // d(w)
+    
+   		public Path( Vertex d, double c )
+    	{
+        	dest = d;
+        	cost = c;
+    	}
+    
+    	public int compareTo( Path rhs )
+    	{
+        	double otherCost = rhs.cost;
+        
+        	return cost < otherCost ? -1 : cost > otherCost ? 1 : 0;
+    	}
+	}
+
+	// Represents a vertex in the graph.
+	static class Vertex
+	{
+    	public String     name;   // Vertex name
+    	public List<Edge> adj;    // Adjacent vertices
+    	public double     dist;   // Cost
+    	public Vertex     prev;   // Previous vertex on shortest path
+    	public int        scratch;// Extra variable used in algorithm
+		public List<Vertex> neighbors; // Actual Vertices in adjacent vertex;
+
+		public double cost(Vertex v) {
+			for(Edge e : adj) {
+				if (e.equals(v))
+					return e.cost;
+				}
+			return Double.POSITIVE_INFINITY;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public void reset()
+			{ dist = Graph.INFINITY; prev = null; scratch = 0; }
+
+    	public Vertex( String nm )
+	    	  { name = nm; adj = new LinkedList<Edge>( ); neighbors = new LinkedList<Vertex>(); reset( ); }
+
+	}
+
    /* Implements Iterable interface */
-    public Iterator iterator() {
+	@Override
+    public Iterator<Vertex> iterator() {
         return new GraphIterator(this);
     }
 
     /**
      * GraphIterator class
      */
-    class GraphIterator implements Iterator {
+    class GraphIterator implements Iterator<Vertex> {
         Iterator vertIter;
-
-        public GraphIterator() {
-            vertIter = vertexMap.values().iterator();
+		
+        GraphIterator(Graph inGraph) {
+            vertIter = inGraph.vertexMap.values().iterator();
         }
         
+		@Override
         public boolean hasNext() {
             return vertIter.hasNext();
         }
 
+		@Override
         public Vertex next() {
-            return vertIter.next();
-        }         
+            return (Vertex)vertIter.next();
+        }        
+	
+		@Override
+		public void remove() {} // Not implemented.
 
     } // End graph iterator class
 } // End graph class
