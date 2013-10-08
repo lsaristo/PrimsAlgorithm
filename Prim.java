@@ -33,22 +33,24 @@ public class Prim {
 
 	private void primsAlgorithm() {
         ArrayList<Graph.Vertex> tree = new ArrayList<Graph.Vertex>(); 		
-        ArrayList<Graph.Vertex> Q = new ArrayList<Graph.Vertex>();
+		Deque<Graph.Vertex> Q = new ArrayDeque<Graph.Vertex>();
         for(Graph.Vertex v : graph)
-            Q.add(v);
+            Q.push(v);
         Graph.Vertex currentVertex = graph.getVertex(STARTVERT); 
-        Q.remove(currentVertex);		
-		while(Q.size() > 1) {
+		tree.add(currentVertex);
+        Q.remove(currentVertex);
+		System.out.println("Before looping Q is " + Q + " and tree is " + tree);		
+		while(Q.size() > 0) {
 			if(currentVertex.equals(GOALVERT))
 				System.out.println("FOUND A GOAL: " + currentVertex); 
-            for(Graph.Vertex adjacent : currentVertex.neighbors) {
-            	if(currentVertex.cost(adjacent) > 0)
-                	System.out.println("Cost for neighbor is " + currentVertex.cost(adjacent) + " size of Q is " + Q.size() + 
-						" current vertex v is " + currentVertex + " and current neighbor is " + adjacent + " list Q is " + Q);
-			tree.add(adjacent);
-			currentVertex = adjacent;
-			Q.remove(adjacent);
+            for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
+                System.out.println("Cost " + adjacentEdge.cost + " size of Q: " + Q.size() + 
+						" current vertex v is " + currentVertex + adjacentEdge + " list Q: " + Q + ". List of neighbors for CV: "
+						+ currentVertex.neighbors);
+				tree.add(adjacentEdge.dest);
+				System.out.println("Q is " + Q + " tree is " + tree);
           	}                            	
+			currentVertex = Q.pop();
 		}
 	}
 
