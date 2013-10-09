@@ -37,15 +37,30 @@ public class Graph implements Iterable<Graph.Vertex>
         return v;
     }
 
+	@Override
+	public String toString() {
+		String toString = "";
+		for(Vertex v : this) {
+			toString += "\n" + v + ": [";
+			for(Edge e : v.neighbors) {
+				toString += "(" + e.dest + ", " + e.cost + ")";
+			}
+			toString += "]";
+		}
+		return toString;
+	}
+
 	// An edge. Connection between two Verticies
 	static class Edge
 	{
 		public double cost;
+		public Vertex source;
 		public Vertex dest;
 		
 		public Edge( Vertex d, double c )  {
         	dest = d;
         	cost = c;
+			source = null;
 		}
 	
 		public String toString() {

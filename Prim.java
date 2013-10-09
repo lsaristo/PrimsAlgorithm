@@ -31,6 +31,7 @@ public class Prim {
 	}
 
 	private void primsAlgorithm() {
+		Graph newGraph = new Graph();
 		List<Graph.Vertex> tree = new ArrayList<Graph.Vertex>();
 		List<Graph.Edge> edgeDB = new ArrayList<Graph.Edge>();
 		Deque<Graph.Vertex> Q = new ArrayDeque<Graph.Vertex>();
@@ -43,15 +44,18 @@ public class Prim {
 			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
 			for(Graph.Vertex currentVertex : tree) {
 	         	for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
-					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge))
+					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge)) {
 						minSoFar = adjacentEdge;
+						minSoFar.source = currentVertex;
+					}
           		}                
 			}
 			edgeDB.add(minSoFar);
 			tree.add(minSoFar.dest);
+			newGraph.addEdge(minSoFar.source.name, minSoFar.dest.name, minSoFar.cost);			
 			Q.remove(minSoFar.dest);
 		}
-		System.out.println("Done with alg, here's the list " + tree);
+		System.out.println("Finally, here't the new spanning tree " + newGraph);
 	}
 
     /**
