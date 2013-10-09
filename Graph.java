@@ -10,8 +10,7 @@ import java.util.*;
  */
 public class Graph implements Iterable<Graph.Vertex>
 {
-    public static final double INFINITY = Double.MAX_VALUE;
-    private Map<String,Vertex> database = new HashMap<String,Vertex>( );
+    public Map<String,Vertex> database = new HashMap<String,Vertex>( );
 
     /**
      * Add a new edge to the graph.
@@ -38,31 +37,6 @@ public class Graph implements Iterable<Graph.Vertex>
         return v;
     }
 
-    /**
-     * Recursive routine to print shortest path to dest
-     * after running shortest path algorithm. The path
-     * is known to exist.
-     */
-    private void printPath( Vertex dest )
-    {
-        if( dest.prev != null )
-        {
-            printPath( dest.prev );
-            System.out.print( " to " );
-        }
-        System.out.print( dest.name );
-    }
-    
-    /**
-     * Initializes the vertex output info prior to running
-     * any shortest path algorithm.
-     */
-    private void clearAll( )
-    {
-        for( Vertex v : database.values( ) )
-            v.reset( );
-    }
-
 	// An edge. Connection between two Verticies
 	static class Edge
 	{
@@ -75,9 +49,8 @@ public class Graph implements Iterable<Graph.Vertex>
 		}
 	
 		public String toString() {
-			return "-->" + dest;
+			return "" + dest;
 		}
-
 	}
 
 	// Represents a vertex in the graph.
@@ -98,7 +71,6 @@ public class Graph implements Iterable<Graph.Vertex>
 			name = nm; 
 			neighbors = new LinkedList<Edge>();
 		}
-
 	}
 
    /* Implements Iterable interface */

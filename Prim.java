@@ -9,7 +9,6 @@ public class Prim {
 	/* Graph Configuration File */
 	final static String CONFIG = "graphConfig.txt";
 	final static String STARTVERT = "A";
-	final static String GOALVERT = "E";
 
 	/* Class memebers */
 	Graph graph;  
@@ -32,26 +31,27 @@ public class Prim {
 	}
 
 	private void primsAlgorithm() {
-        ArrayList<Graph.Vertex> tree = new ArrayList<Graph.Vertex>(); 		
+		List<Graph.Vertex> tree = new ArrayList<Graph.Vertex>();
+		List<Graph.Edge> edgeDB = new ArrayList<Graph.Edge>();
 		Deque<Graph.Vertex> Q = new ArrayDeque<Graph.Vertex>();
         for(Graph.Vertex v : graph)
             Q.push(v);
-        Graph.Vertex currentVertex = graph.getVertex(STARTVERT); 
-		tree.add(currentVertex);
-        Q.remove(currentVertex);
-		System.out.println("Before looping Q is " + Q + " and tree is " + tree);		
+		tree.add(graph.getVertex(STARTVERT));
+        Q.remove(graph.getVertex(STARTVERT));
+		
 		while(Q.size() > 0) {
-			if(currentVertex.equals(GOALVERT))
-				System.out.println("FOUND A GOAL: " + currentVertex); 
-            for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
-                System.out.println("Cost " + adjacentEdge.cost + " size of Q: " + Q.size() + 
-						" current vertex v is " + currentVertex + adjacentEdge + " list Q: " + Q + ". List of neighbors for CV: "
-						+ currentVertex.neighbors);
-				tree.add(adjacentEdge.dest);
-				System.out.println("Q is " + Q + " tree is " + tree);
-          	}                            	
-			currentVertex = Q.pop();
+			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
+			for(Graph.Vertex currentVertex : tree) {
+	         	for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
+					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge))
+						minSoFar = adjacentEdge;
+          		}                
+			}
+			edgeDB.add(minSoFar);
+			tree.add(minSoFar.dest);
+			Q.remove(minSoFar.dest);
 		}
+		System.out.println("Done with alg, here's the list " + tree);
 	}
 
     /**
