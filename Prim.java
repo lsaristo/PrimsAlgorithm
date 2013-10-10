@@ -27,6 +27,7 @@ public class Prim {
 		catch (IOException e) {
 			System.out.println("ERROR: Unexpected end of configuration or no configuration found");
 		}
+		System.out.println("Created graph: " + newGraph);
 		return newGraph;
 	}
 
@@ -39,7 +40,9 @@ public class Prim {
             Q.push(v);
 		tree.add(graph.getVertex(STARTVERT));
         Q.remove(graph.getVertex(STARTVERT));
-		
+		System.out.println("INIT: Q contains: " + Q);
+		System.out.println("INIT: Tree contains: " + tree);	
+	
 		while(Q.size() > 0) {
 			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
 			for(Graph.Vertex currentVertex : tree) {
@@ -48,12 +51,20 @@ public class Prim {
 						minSoFar = adjacentEdge;
 						minSoFar.source = currentVertex;
 					}
+					try
+						{ String s = minSoFar.source.name; }
+					catch (NullPointerException e)
+						{ Q.remove(adjacentEdge.dest); }
           		}                
 			}
 			edgeDB.add(minSoFar);
-			tree.add(minSoFar.dest);
-			newGraph.addEdge(minSoFar.source.name, minSoFar.dest.name, minSoFar.cost);			
 			Q.remove(minSoFar.dest);
+			try 
+				{ newGraph.addEdge(minSoFar.source.name, minSoFar.dest.name, minSoFar.cost); }
+			catch (NullPointerException e)
+				{ continue; }
+			tree.add(minSoFar.dest);
+			System.out.println("Q contains: " + Q);
 		}
 		System.out.println("Finally, here't the new spanning tree " + newGraph);
 	}
