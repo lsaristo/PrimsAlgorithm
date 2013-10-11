@@ -31,8 +31,7 @@ public class Graph implements Iterable<Graph.Vertex>
     public Vertex getVertex( String vertexName )
     {
         Vertex v = database.get( vertexName );
-        if( v == null )
-        {
+        if( v == null ) {
             v = new Vertex( vertexName );
             database.put( vertexName, v );
         }
@@ -41,7 +40,7 @@ public class Graph implements Iterable<Graph.Vertex>
 
 	@Override
 	public String toString() {
-		String toString = "-Vertex----Edges-------\n";
+		String toString = "\n-Vertex----Edges-------\n";
 		for(Vertex v : this) {
 			toString += "\n" + v + ": [";
 			for(Edge e : v.neighbors) {

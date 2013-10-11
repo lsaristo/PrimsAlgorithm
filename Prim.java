@@ -44,7 +44,8 @@ public class Prim {
 			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
 			for(Graph.Vertex currentVertex : tree) {
 	         	for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
-					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge)) {
+					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge) 
+						&& (!tree.contains(adjacentEdge.source) || !tree.contains(adjacentEdge.dest))) {
 						minSoFar = adjacentEdge;
 					}
 	     		}                
