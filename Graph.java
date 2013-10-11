@@ -18,7 +18,10 @@ public class Graph implements Iterable<Graph.Vertex>
     {
         Vertex v = getVertex( sourceName );
         Vertex w = getVertex( destName );
-		v.neighbors.add(new Edge(w, cost));
+		Edge e = new Edge(w, cost);
+		e.source = v;
+		v.neighbors.add(e);
+		w.neighbors.add(e);
     }
 
     /**
@@ -64,7 +67,7 @@ public class Graph implements Iterable<Graph.Vertex>
 		
 		@Override
 		public String toString() {
-			return "" + dest;
+			return "" + source + "<-->" + dest;
 		}
 	}
 

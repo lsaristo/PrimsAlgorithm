@@ -8,7 +8,7 @@ import java.io.*;
 public class Prim {
 	/* Graph Configuration File */
 	final static String CONFIG = "graphConfig.txt";
-	final static String STARTVERT = "A";
+	final static String STARTVERT = "1";
 
 	/* Class memebers */
 	Graph graph;  
@@ -40,31 +40,45 @@ public class Prim {
             Q.push(v);
 		tree.add(graph.getVertex(STARTVERT));
         Q.remove(graph.getVertex(STARTVERT));
-		System.out.println("INIT: Q contains: " + Q);
-		System.out.println("INIT: Tree contains: " + tree);	
+
+		System.out.println("Entered function. Q, tree: " + Q + "\n" + tree);
 	
 		while(Q.size() > 0) {
+			
+			System.out.println("Running while loop. Q, tree: " + Q + "\n" + tree);
 			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
 			for(Graph.Vertex currentVertex : tree) {
+	
+				
+				System.out.println("First for loop. currentVertex, tree: " + currentVertex + " " + tree);
+
 	         	for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
+
+					System.out.println("Second for loop. adjacent edge, currentvertex.neighbors: " + adjacentEdge + " " + currentVertex.neighbors);
+
 					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge)) {
+
+						System.out.println("setting minSoFar to " + adjacentEdge);
+
 						minSoFar = adjacentEdge;
-						minSoFar.source = currentVertex;
 					}
-					try
-						{ String s = minSoFar.source.name; }
-					catch (NullPointerException e)
-						{ Q.remove(adjacentEdge.dest); }
-          		}                
+	     		}                
 			}
-			edgeDB.add(minSoFar);
-			Q.remove(minSoFar.dest);
-			try 
+			try
 				{ newGraph.addEdge(minSoFar.source.name, minSoFar.dest.name, minSoFar.cost); }
 			catch (NullPointerException e)
 				{ continue; }
-			tree.add(minSoFar.dest);
-			System.out.println("Q contains: " + Q);
+
+			edgeDB.add(minSoFar);
+			if(tree.contains(minSoFar.source))
+				tree.add(minSoFar.dest);
+			else
+				tree.add(minSoFar.source);
+
+			if(Q.contains(minSoFar.dest))
+				Q.remove(minSoFar.dest);
+			else
+				Q.remove(minSoFar.source);
 		}
 		System.out.println("Finally, here't the new spanning tree " + newGraph);
 	}
