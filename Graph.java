@@ -41,11 +41,11 @@ public class Graph implements Iterable<Graph.Vertex>
 
 	@Override
 	public String toString() {
-		String toString = "";
+		String toString = "-Vertex----Edges-------\n";
 		for(Vertex v : this) {
 			toString += "\n" + v + ": [";
 			for(Edge e : v.neighbors) {
-				toString += "(" + e.dest + ", " + e.cost + ")";
+				toString += "(" + e + ", " + e.cost + ")";
 			}
 			toString += "]";
 		}

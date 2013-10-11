@@ -40,26 +40,11 @@ public class Prim {
             Q.push(v);
 		tree.add(graph.getVertex(STARTVERT));
         Q.remove(graph.getVertex(STARTVERT));
-
-		System.out.println("Entered function. Q, tree: " + Q + "\n" + tree);
-	
 		while(Q.size() > 0) {
-			
-			System.out.println("Running while loop. Q, tree: " + Q + "\n" + tree);
 			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
 			for(Graph.Vertex currentVertex : tree) {
-	
-				
-				System.out.println("First for loop. currentVertex, tree: " + currentVertex + " " + tree);
-
 	         	for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
-
-					System.out.println("Second for loop. adjacent edge, currentvertex.neighbors: " + adjacentEdge + " " + currentVertex.neighbors);
-
 					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge)) {
-
-						System.out.println("setting minSoFar to " + adjacentEdge);
-
 						minSoFar = adjacentEdge;
 					}
 	     		}                
