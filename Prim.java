@@ -15,6 +15,7 @@ public class Prim {
 
 	public Prim() {
 		graph = createGraph(); 
+		graph.getVertex(STARTVERT).id = 0;
 	}
 
 	private Graph createGraph() {
@@ -31,40 +32,46 @@ public class Prim {
 		return newGraph;
 	}
 
-	private void primsAlgorithm() {
+	/**
+	 * Prim's algorithm.
+	 */ 
+	private void primsAlgorithm() 
+	{
 		Graph newGraph = new Graph();
-		List<Graph.Vertex> tree = new ArrayList<Graph.Vertex>();
-		List<Graph.Edge> edgeDB = new ArrayList<Graph.Edge>();
-		Deque<Graph.Vertex> Q = new ArrayDeque<Graph.Vertex>();
-        for(Graph.Vertex v : graph)
-            Q.push(v);
-		tree.add(graph.getVertex(STARTVERT));
-        Q.remove(graph.getVertex(STARTVERT));
-		while(Q.size() > 0) {
-			Graph.Edge minSoFar = new Graph.Edge(new Graph.Vertex("Dummy"), Double.POSITIVE_INFINITY);
-			for(Graph.Vertex currentVertex : tree) {
-	         	for(Graph.Edge adjacentEdge : currentVertex.neighbors) {
-					if(minSoFar.cost > adjacentEdge.cost && !edgeDB.contains(adjacentEdge) 
-						&& (!tree.contains(adjacentEdge.source) || !tree.contains(adjacentEdge.dest))) {
-						minSoFar = adjacentEdge;
-					}
-	     		}                
+		PriorityQueue<Graph.Vertex> Q = new PriorityQueue<Graph.Vertex>();
+		Q.add(graph.getVertex(STARTVERT));
+		Hashtable<String, Graph.Vertex> db = new Hashtable<String, Graph.Vertex>();
+		db.put(graph.getVertex(STARTVERT).name, graph.getVertex(STARTVERT));
+		while(Q.size() > 0) 
+		{
+			Graph.Vertex currentVertex = Q.poll();
+			if(currentVertex.deleted) 
+				continue;
+
+			if(currentVertex.pointer != null) 
+				newGraph.addEdge(currentVertex.pointer, currentVertex.name, currentVertex.id);
+			else
+				newGraph.getVertex(currentVertex.name);	
+
+	        for(Graph.Edge adjacentEdge : currentVertex.neighbors) 
+			{
+				Graph.Vertex adjacentVertex = new Graph.Vertex((adjacentEdge.source.equals(currentVertex) ? adjacentEdge.dest : adjacentEdge.source));
+				adjacentVertex.id = adjacentEdge.cost;
+				adjacentVertex.pointer = currentVertex.name;
+				adjacentVertex.id = adjacentEdge.cost;
+				
+				if(db.contains(adjacentVertex)) System.out.println("FOUND VERT " + db.get(adjacentVertex.name) + " aka " + adjacentVertex);
+				if(!db.contains(adjacentVertex) ) {
+					Q.add(adjacentVertex);
+					db.put(adjacentVertex.name, adjacentVertex);
+				}
+				else if (db.get(adjacentVertex.name).id > adjacentVertex.id) {
+					db.get(adjacentVertex.name).deleted = true;
+					db.remove(adjacentVertex.name);
+					db.put(adjacentVertex.name, adjacentVertex);
+					Q.add(adjacentVertex);
+				}
 			}
-			try
-				{ newGraph.addEdge(minSoFar.source.name, minSoFar.dest.name, minSoFar.cost); }
-			catch (NullPointerException e)
-				{ continue; }
-
-			edgeDB.add(minSoFar);
-			if(tree.contains(minSoFar.source))
-				tree.add(minSoFar.dest);
-			else
-				tree.add(minSoFar.source);
-
-			if(Q.contains(minSoFar.dest))
-				Q.remove(minSoFar.dest);
-			else
-				Q.remove(minSoFar.source);
 		}
 		System.out.println("Finally, here't the new spanning tree " + newGraph);
 	}
