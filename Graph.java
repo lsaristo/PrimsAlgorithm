@@ -42,7 +42,7 @@ public class Graph implements Iterable<Graph.Vertex>
 
 	@Override
 	public String toString() {
-		String toString = "\n-Vertex----Edges-------\n";
+		String toString = "\n-Vertex: Edges:--------------------------------\n";
 		for(Vertex v : this) {
 			toString += "\n" + v + ": [";
 			for(Edge e : v.neighbors) {
