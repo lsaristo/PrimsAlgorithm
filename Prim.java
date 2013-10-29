@@ -34,6 +34,16 @@ public class Prim {
 
 	/**
 	 * Prim's algorithm.
+	 * This verion uses a Binary Heap (PriorityQueue) and an adjacency list
+	 *	(built into Graph.Vertex) to achieve running time of: 
+	 *	1) The number of edges in the graph (iterating through each Vertex's
+	 *		adjacency list). 
+	 *	2) For each of these verticies. Add it's adjacent verticies to the 
+	 *		PriorityQueue (done in log(n) time), then removing the lightest 
+	 *		edge in the Queue (also done in log(n) time). 
+	 *	And therefore, the total running time is: the number of edges in the graph (e), and 
+	 *		for each of these edges, another factor of log(n) for the number of
+	 *		verticies int he graph, or e*log(n).
 	 */ 
 	private void primsAlgorithm() 
 	{
@@ -55,12 +65,13 @@ public class Prim {
 
 	        for(Graph.Edge adjacentEdge : currentVertex.neighbors) 
 			{
-				Graph.Vertex adjacentVertex = new Graph.Vertex((adjacentEdge.source.equals(currentVertex) ? adjacentEdge.dest : adjacentEdge.source));
+				Graph.Vertex adjacentVertex = 
+					new Graph.Vertex((adjacentEdge.source.equals(currentVertex)
+					? adjacentEdge.dest : adjacentEdge.source));
+				
 				adjacentVertex.id = adjacentEdge.cost;
 				adjacentVertex.pointer = currentVertex.name;
-				adjacentVertex.id = adjacentEdge.cost;
-				
-				if(db.contains(adjacentVertex)) System.out.println("FOUND VERT " + db.get(adjacentVertex.name) + " aka " + adjacentVertex);
+
 				if(!db.contains(adjacentVertex) ) {
 					Q.add(adjacentVertex);
 					db.put(adjacentVertex.name, adjacentVertex);
