@@ -1,0 +1,1 @@
+This is a simple Java program that implements Prims algorithm. We read a specially formatted config file that represents a graph and construct this graph using the representation of a graph as implemented in Graph.java.
