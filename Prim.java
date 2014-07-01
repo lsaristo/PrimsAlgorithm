@@ -4,22 +4,28 @@ import java.io.*;
 /**
  * Driver to implement Prim's algorithm.
  */
-public class Prim {
-    final static String CONFIG = "graphConfig.txt";
-    final static String STARTVERT = "1";
-    public Graph graph;  
+public class Prim 
+{
+    private final static String CONFIG = "graphConfig.txt";
+    private final static String STARTVERT = "1";
+    private Graph graph;  
 
-    public Prim() {
+    /**
+     * Prim algorithm constructor.
+     */
+    public Prim() 
+    {
         graph = createGraph(); 
         graph.getVertex(STARTVERT).id = 0;
     }
 
-    /**
+    /*
      * Generate a Graph from the config file specified in CONFIG.
      *
      * @see Graph.java
      */
-    private Graph createGraph() {
+    private Graph createGraph() 
+    {
         Graph newGraph = new Graph();
 
         try {
@@ -41,7 +47,7 @@ public class Prim {
         return newGraph;
     }
 
-    /**
+    /*
      * Prim's algorithm.
      * This verion uses a Binary Heap (PriorityQueue) and an adjacency list
      *  (built into Graph.Vertex) to achieve running time of: 
@@ -51,7 +57,8 @@ public class Prim {
      *      PriorityQueue (done in log(n) time), then removing the lightest 
      *      edge in the Queue (also done in log(n) time). 
      */ 
-    private void primsAlgorithm() {
+    private void primsAlgorithm() 
+    {
         Graph newGraph = new Graph();
         PriorityQueue<Graph.Vertex> Q = new PriorityQueue<Graph.Vertex>();
         Q.add(graph.getVertex(STARTVERT));
@@ -97,13 +104,12 @@ public class Prim {
     /**
      * Primary program entry point.
      *
-     * @args vertices in the Graph.
-     *
-     * @see Graph.java
+     * @param args Program options.
+     * @see Graph
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         Prim puzzle = new Prim();
         puzzle.primsAlgorithm();
-    
     } // End main in Prim
 } // End Prim Class
