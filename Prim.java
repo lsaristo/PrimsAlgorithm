@@ -29,20 +29,22 @@ public class Prim
         Graph newGraph = new Graph();
 
         try {
-            Scanner inScan = new Scanner(new BufferedReader(new FileReader(CONFIG)));
+            Scanner inScan = 
+                new Scanner(new BufferedReader(new FileReader(CONFIG)));
             
             while(inScan.hasNext()) {
                 newGraph.addEdge(
-                    inScan.next()
-                    , inScan.next()
-                    , (double)inScan.nextInt()
+                    inScan.next(),
+                    inScan.next(),
+                    (double)inScan.nextInt()
                 );
             }
         } catch (IOException e) {
-            System.out.println("ERROR: Unexpected end of config or no config found");
+            System.out.println(
+                "ERROR: Unexpected end of config or no config found"
+            );
             return null;
         }
-
         System.out.println("Created graph: " + newGraph);
         return newGraph;
     }
@@ -71,7 +73,9 @@ public class Prim
                 continue;
 
             if(currentVertex.pointer != null) {
-                newGraph.addEdge(currentVertex.pointer, currentVertex.name, currentVertex.id);
+                newGraph.addEdge(
+                    currentVertex.pointer, currentVertex.name, currentVertex.id
+                );
             } else {
                 newGraph.getVertex(currentVertex.name); 
             }
@@ -98,7 +102,7 @@ public class Prim
                 }
             }
         }
-        System.out.println("Finally, here't the new spanning tree " + newGraph);
+        System.out.println("Result: " + newGraph);
     }
 
     /**
